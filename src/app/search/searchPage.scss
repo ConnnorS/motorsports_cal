@@ -1,0 +1,32 @@
+.searchPage {
+  padding-top: 2vh;
+
+  .advancedSearch {
+    display: flex;
+    gap: 2vw;
+    justify-content: center;
+    align-items: center;
+
+    .descriptionInput,
+    .venuesInput {
+      width: 20%;
+    }
+
+    .searchButton {
+      display: flex;
+      margin-top: auto;
+    }
+  }
+
+  .searchResults {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 2vh 5vw 0 5vw;
+
+    .searchResultCard {
+      width: 30%;
+      margin-bottom: 1rem;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+.navBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3vw;
+  background-color: $oc-gray-4;
+  height: 3vh;
+
+  .nextLink {
+    text-decoration: none;
+    color: black;
+
+    &:hover {
+      color: $oc-blue-9;
+    }
+  }
+}

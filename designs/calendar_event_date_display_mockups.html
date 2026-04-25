@@ -1,0 +1,72 @@
+<h2 class="sr-only">Four mockup styles for displaying calendar event start and end dates</h2>
+
+<style>
+  .section { margin: 0 0 2rem; }
+  .label { font-size: 12px; color: var(--color-text-secondary); letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 10px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+  .arrow { color: var(--color-text-tertiary); font-size: 14px; }
+</style>
+
+<div style="padding: 1.5rem 0;">
+
+  <div class="section">
+    <p class="label">1 — inline with arrow</p>
+    <div class="card" style="display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <span style="font-size: 15px; font-weight: 500; color: var(--color-text-primary);">Mon 14 Apr, 9:00 am</span>
+      <span class="arrow">→</span>
+      <span style="font-size: 15px; font-weight: 500; color: var(--color-text-primary);">Mon 14 Apr, 11:30 am</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="label">2 — pill range</p>
+    <div style="display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+      <span class="pill" style="background: #E6F1FB; color: #0C447C;">14 Apr, 9:00 am</span>
+      <span class="arrow">→</span>
+      <span class="pill" style="background: #E6F1FB; color: #0C447C;">14 Apr, 11:30 am</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="label">3 — stacked from / to</p>
+    <div class="card" style="display: inline-grid; grid-template-columns: auto 1fr; gap: 6px 14px; align-items: center;">
+      <span style="font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">From</span>
+      <span style="font-size: 14px; font-weight: 500; color: var(--color-text-primary);">Monday 14 April · 9:00 am</span>
+      <span style="font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">To</span>
+      <span style="font-size: 14px; font-weight: 500; color: var(--color-text-primary);">Monday 14 April · 11:30 am</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="label">4 — calendar tile + time</p>
+    <div style="display: inline-flex; align-items: stretch; gap: 12px; flex-wrap: wrap;">
+      <div class="card" style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; flex-direction: column; align-items: center; width: 44px; border-radius: 8px; overflow: hidden; border: 0.5px solid var(--color-border-tertiary);">
+          <div style="background: #E24B4A; color: #fff; font-size: 10px; font-weight: 500; padding: 2px 0; width: 100%; text-align: center; letter-spacing: 0.04em;">APR</div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; padding: 2px 0;">14</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: var(--color-text-secondary);">Start</div>
+          <div style="font-size: 15px; font-weight: 500; color: var(--color-text-primary);">9:00 am</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center;">
+        <span class="arrow" style="font-size: 20px;">→</span>
+      </div>
+
+      <div class="card" style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; flex-direction: column; align-items: center; width: 44px; border-radius: 8px; overflow: hidden; border: 0.5px solid var(--color-border-tertiary);">
+          <div style="background: #E24B4A; color: #fff; font-size: 10px; font-weight: 500; padding: 2px 0; width: 100%; text-align: center; letter-spacing: 0.04em;">APR</div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; padding: 2px 0;">14</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: var(--color-text-secondary);">End</div>
+          <div style="font-size: 15px; font-weight: 500; color: var(--color-text-primary);">11:30 am</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
