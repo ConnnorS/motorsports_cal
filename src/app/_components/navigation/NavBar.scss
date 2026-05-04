@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   gap: 3vw;
-  background-color: $oc-gray-4;
+  background-color: grey;
   height: 3vh;
 
   .nextLink {
@@ -11,7 +11,7 @@
     color: black;
 
     &:hover {
-      color: $oc-blue-9;
+      color: lightskyblue;
     }
   }
 }
