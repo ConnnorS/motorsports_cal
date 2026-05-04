@@ -1,0 +1,33 @@
+:root {
+  /* thanks Claude */
+
+  /* navigation bar background */
+  --color-nav-bg: #0A1628;
+  /* main page background */
+  --color-page-bg: #F4F5F7;
+  /* cards, modals, panels */
+  --color-card-bg: #FFFFFF;
+
+  /* headings and body copy */
+  --color-text-primary: #111827;
+  /* secondary / helper text */
+  --color-text-muted: #6B7280;
+  /* text on navy/dark backgrounds */
+  --color-text-on-dark: #FFFFFF;
+
+  /* inline links */
+  --color-link: #2D6FE8;
+  /* link hover — red flash */
+  --color-link-hover: #CC1122;
+
+  /* primary CTA buttons */
+  --color-btn-primary: #CC1122;
+  /* secondary / ghost buttons */
+  --color-btn-secondary: #1A3D7C;
+}
+
+.app {
+  background-color: var(--color-page-bg);
+  height: 100vh;
+  width: 100vw;
+}

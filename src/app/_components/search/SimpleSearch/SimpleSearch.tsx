@@ -1,6 +1,6 @@
-import { Button, Checkbox, Divider, Select, TextInput, Title } from "@mantine/core";
+import { Button, Checkbox, Divider, TextInput, Title } from "@mantine/core";
 import React from "react";
-import { SupportedVenues } from "../../_constants/supportedVenues";
+import { SupportedVenues } from "../../../_constants/supportedVenues";
 import { SelectedVenues } from "@/app/calendar/page";
 
 
@@ -85,6 +85,7 @@ export default function SimpleSearch(props: {
 
       <div className="confirm">
         <Button
+          color="var(--color-btn-primary)"
           onClick={props.handleEventSearch}
           loading={props.isLoading}
         >Search</Button>

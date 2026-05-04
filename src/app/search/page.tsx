@@ -18,9 +18,11 @@ export default function SearchPage(): React.JSX.Element {
     venues: []
   });
   const [searchResults, setSearchResults] = useState<IndividualEvent[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleAdvancedSearch = async () => {
     try {
+      setIsLoading(true);
       let allEvents: IndividualEvent[] = [];
 
       /* first, search for all our events */
@@ -73,6 +75,9 @@ export default function SearchPage(): React.JSX.Element {
     catch (error: unknown) {
       console.error(error);
     }
+    finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -81,6 +86,8 @@ export default function SearchPage(): React.JSX.Element {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
         handleEventSearch={handleAdvancedSearch}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
 
       <div className="searchResults">

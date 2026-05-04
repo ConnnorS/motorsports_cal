@@ -7,7 +7,9 @@ import { SetStateAction } from "react";
 export default function AdvancedSearch(props: {
   searchParams: AdvancedSearchParams,
   setSearchParams: React.Dispatch<SetStateAction<AdvancedSearchParams>>,
-  handleEventSearch: () => void
+  handleEventSearch: () => void,
+  isLoading: boolean,
+  setIsLoading: React.Dispatch<SetStateAction<boolean>>
 }) {
   return (
     <div className="advancedSearch">
@@ -38,6 +40,9 @@ export default function AdvancedSearch(props: {
       <div className="searchButton">
         <Button
           onClick={props.handleEventSearch}
+          color="var(--color-btn-primary)"
+          loading={props.isLoading}
+          disabled={props.searchParams.venues.length === 0}
         >
           Search
         </Button>

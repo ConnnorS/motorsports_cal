@@ -22,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <MantineProvider theme={theme}>
-          <NavBar />
-          {children}
-        </MantineProvider>
+        <div className="app">
+          <MantineProvider theme={theme}>
+            <NavBar />
+            {children}
+          </MantineProvider>
+        </div>
       </body>
     </html >
   );

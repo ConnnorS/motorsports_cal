@@ -8,7 +8,7 @@ import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import { getCmsEventDetails, getCmsEvents } from "../_api/cms";
 import { getWintonRacewayEvents } from "../_api/wintonRaceway";
-import SimpleSearch from "../_components/search/SimpleSearch";
+import SimpleSearch from "../_components/search/SimpleSearch/SimpleSearch";
 import { readableDate } from "../_helpers/readableDate";
 import "./calendarPage.scss";
 
