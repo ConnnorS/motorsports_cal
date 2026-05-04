@@ -8,7 +8,6 @@ import { IndividualEvent } from "@/types/event";
 import { getCmsEvents } from "../_api/cms";
 import { SupportedVenues } from "../_constants/supportedVenues";
 import { getWintonRacewayEvents } from "../_api/wintonRaceway";
-import SearchResultCard from "../_components/search/SearchResultCard/SearchResultCard";
 
 export default function SearchPage(): React.JSX.Element {
   const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
@@ -91,7 +90,7 @@ export default function SearchPage(): React.JSX.Element {
       />
 
       <div className="searchResults">
-        {searchResults.map((result, index) => <SearchResultCard key={index} value={result} />)}
+        {/* to do */}
       </div>
     </div>
   );
