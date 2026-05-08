@@ -10,13 +10,11 @@ export type IndividualEvent = {
 };
 
 export type IndividualEventDetails = {
-  id: number;
-  title?: { id: number; name: string; };
+  id: number | string;
   name: string;
-  venue?: { code: keyof typeof SupportedVenues; id: number; name: string; colour: string };
-  category?: string;
+  category: string | undefined;
   start: Date;
   end: Date;
-  image?: { url: string; height: number; width: number; };
+  image: { url: string; height: number; width: number; } | undefined;
   description: string;
 }

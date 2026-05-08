@@ -21,6 +21,8 @@ export type WintonRacewayEvent = {
   id: string,
   name: string,
   description: string,
+  repeatFrequency?: "weekly",
+  repeatInterval?: number,
   start: { type: "datetime", date: string, time: string },
   end: { type: "datetime", date: string, time: string },
   timeZone: "string",
@@ -28,6 +30,6 @@ export type WintonRacewayEvent = {
     url: string,
     name: string,
     width: number,
-    height: NumberInputCssVariables
+    height: number
   }
 }

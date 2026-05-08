@@ -1,7 +1,7 @@
 import { Button, Checkbox, Divider, TextInput, Title } from "@mantine/core";
 import React from "react";
 import { SupportedVenues } from "../../../_constants/supportedVenues";
-import { SelectedVenues } from "@/app/calendar/page";
+import { SelectedVenues } from "@/app/pages/calendar/page";
 
 
 export default function SimpleSearch(props: {
