@@ -4,10 +4,14 @@ import React, { useState } from "react";
 import "./searchPage.scss";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
 import AdvancedSearch from "../_components/search/AdvancedSearch/AdvancedSearch";
+import SearchResultCard from "../_components/SearchResultCard/SearchResultCard";
 import { IndividualEvent } from "@/types/event";
 import { getCmsEvents } from "../_api/cms";
 import { SupportedVenues } from "../_constants/supportedVenues";
 import { getWintonRacewayEvents } from "../_api/wintonRaceway";
+import { Pagination } from "@mantine/core";
+
+const PAGE_SIZE: number = 12;
 
 export default function SearchPage(): React.JSX.Element {
   const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
@@ -18,6 +22,7 @@ export default function SearchPage(): React.JSX.Element {
   });
   const [searchResults, setSearchResults] = useState<IndividualEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   const handleAdvancedSearch = async () => {
     try {
@@ -90,7 +95,19 @@ export default function SearchPage(): React.JSX.Element {
       />
 
       <div className="searchResults">
-        {/* to do */}
+        {searchResults
+          .slice((pageNumber - 1) * PAGE_SIZE, pageNumber * PAGE_SIZE)
+          .map((event) => (
+            <SearchResultCard key={event.id} event={event} />
+          ))}
+      </div>
+
+      <div className="pagination">
+        <Pagination
+          total={searchResults.length / PAGE_SIZE}
+          value={pageNumber}
+          onChange={setPageNumber}
+        />
       </div>
     </div>
   );
