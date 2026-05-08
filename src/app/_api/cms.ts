@@ -3,7 +3,6 @@ import { SupportedVenues } from "../_constants/supportedVenues";
 import { QldRacewayEvent, QldRacewayEventDetails } from "@/types/qldRacewayTypes";
 import { MorganParkEvent, MorganParkEventDetails } from "@/types/morganParkTypes";
 import { LakesideParkEvent, LakesideParkEventDetails } from "@/types/lakesideParkTypes";
-import { WintonRacewayWidgetDetails } from "@/types/wintonRacewayTypes";
 
 /**
  * Gets the list of events within a given date range for a given venue which uses the cms
@@ -19,7 +18,7 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
 
   try {
     // return undefined for any venues that don't use the CMS system
-    if (!["QLD_RACE_WAY", "LAKESIDE_PARK", "MORGAN_PARK"].includes(venue)) {
+    if (!SupportedVenues[venue].cmsSupported) {
       throw new Error("Cms is not supported for venue: " + venue);
     }
 
@@ -58,7 +57,7 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
 export async function getCmsEventDetails(eventId: number | string, venue: keyof typeof SupportedVenues): Promise<IndividualEventDetails | undefined> {
   try {
     // return undefined for any venues that don't use the CMS system
-    if (!["QLD_RACE_WAY", "LAKESIDE_PARK", "MORGAN_PARK"].includes(venue)) {
+    if (!SupportedVenues[venue].cmsSupported) {
       throw new Error("Cms is not supported for venue: " + venue);
     }
 
@@ -69,9 +68,7 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
       const responseJson: QldRacewayEventDetails = await response.json();
       details = {
         id: responseJson.id,
-        title: responseJson.title,
         name: responseJson.name,
-        venue: { ...responseJson.venue, code: "QLD_RACE_WAY" },
         category: responseJson.category.name,
         start: new Date(responseJson.start_time),
         end: new Date(responseJson.end_time),
@@ -88,8 +85,10 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
       details = {
         id: responseJson.id,
         name: responseJson.name,
+        category: undefined,
         start: new Date(responseJson.start_time),
         end: new Date(responseJson.end_time),
+        image: undefined,
         description: responseJson.description
       };
     }
@@ -98,6 +97,7 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
       details = {
         id: responseJson.id,
         name: responseJson.name,
+        category: undefined,
         start: new Date(responseJson.start_date),
         end: new Date(responseJson.end_date),
         description: responseJson.calendar_content,

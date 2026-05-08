@@ -6,10 +6,8 @@ import { AdvancedSearchParams } from "@/types/advancedSearch";
 import AdvancedSearch from "../_components/search/AdvancedSearch/AdvancedSearch";
 import SearchResultCard from "../_components/SearchResultCard/SearchResultCard";
 import { IndividualEvent } from "@/types/event";
-import { getCmsEvents } from "../_api/cms";
-import { SupportedVenues } from "../_constants/supportedVenues";
-import { getWintonRacewayEvents } from "../_api/wintonRaceway";
 import { Pagination } from "@mantine/core";
+import { eventSearch } from "../_helpers/search/eventSearch";
 
 const PAGE_SIZE: number = 12;
 
@@ -27,53 +25,13 @@ export default function SearchPage(): React.JSX.Element {
   const handleAdvancedSearch = async () => {
     try {
       setIsLoading(true);
-      let allEvents: IndividualEvent[] = [];
-
-      /* first, search for all our events */
-      for (const venue of searchParams.venues) {
-        // search all venues using the CMS system
-        if (SupportedVenues[venue].cmsSupported) {
-          const events = await getCmsEvents(
-            searchParams.start,
-            searchParams.end,
-            venue
-          );
-
-          if (events) {
-            allEvents = allEvents.concat(events);
-          }
-          else {
-            alert(`Error searching for ${venue}'s events`);
-          }
-        }
-        // handle all other venues below...
-        if (venue === "WINTON_RACEWAY") {
-          const events = await getWintonRacewayEvents(
-            searchParams.start,
-            searchParams.end,
-          );
-
-          if (events) {
-            allEvents = allEvents.concat(events);
-          }
-          else {
-            alert(`Error searching for ${venue}'s events`);
-          }
-        }
-      }
-
-      /* second, filter our events by title */
-      if (searchParams.title) {
-        allEvents = allEvents.filter(event =>
-          event.title.toLowerCase().includes(searchParams.title.toLowerCase())
-        );
-      }
-
-      /* third, sort our events by date */
-      // @ts-ignore
-      allEvents.sort((a, b) => a.start - b.start);
-
-      /* finally, set our search results state variable */
+      const allEvents = await eventSearch(
+        searchParams.start,
+        searchParams.end,
+        searchParams.venues,
+        searchParams.title,
+        true
+      );
       setSearchResults(allEvents);
     }
     catch (error: unknown) {
