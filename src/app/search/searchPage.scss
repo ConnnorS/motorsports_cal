@@ -1,5 +1,8 @@
 .searchPage {
   padding-top: 2vh;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2vh;
 
   .advancedSearch {
     display: flex;
@@ -19,14 +22,27 @@
   }
 
   .searchResults {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
     padding: 2vh 5vw 0 5vw;
+  }
 
-    .searchResultCard {
-      width: 30%;
-      margin-bottom: 1rem;
+  /* adjust number of search result columns based on window width */
+  @media (max-width: 980px) {
+    .searchResults {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+  }
+
+  @media (max-width: 680px) {
+    .searchResults {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
   }
 }

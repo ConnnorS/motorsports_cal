@@ -1,0 +1,25 @@
+.searchResultCard {
+  background: var(--color-card-bg);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 170px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  }
+
+  .title {
+    color: var(--color-text-primary);
+    line-height: 1.2;
+  }
+
+  .dates {
+    color: var(--color-text-muted);
+  }
+
+  .venue {
+    margin-top: 0.75rem;
+    font-weight: 600;
+  }
+}
