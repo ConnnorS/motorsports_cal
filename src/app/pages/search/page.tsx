@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import "./searchPage.scss";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
+import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSearch";
+import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { IndividualEvent } from "@/types/event";
 import { Pagination } from "@mantine/core";
-import { eventSearch } from "../_search/eventSearch";
-import AdvancedSearch from "../_components/search/AdvancedSearch/AdvancedSearch";
-import SearchResultCard from "../_components/SearchResultCard/SearchResultCard";
+import { eventSearch } from "../../_search/eventSearch";
 
 const PAGE_SIZE: number = 12;
 

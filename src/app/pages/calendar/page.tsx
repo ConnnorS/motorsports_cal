@@ -6,10 +6,10 @@ import { Card, Image, Modal, Pill, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
-import SimpleSearch from "../_components/search/SimpleSearch/SimpleSearch";
-import { readableDate } from "../_helpers/readableDate";
 import "./calendarPage.scss";
-import { eventSearch, getEventDetails } from "../_search/eventSearch";
+import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
+import { readableDate } from "@/app/_helpers/readableDate";
+import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 
 export type SelectedVenues = Record<keyof typeof SupportedVenues, boolean>;
 

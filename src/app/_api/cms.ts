@@ -23,7 +23,7 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
     }
 
     const calendarUrl: string = SupportedVenues[venue].url + "/calendar";
-    const requestUrl: string = `${calendarUrl}?start=${startDate.toISOString()}&end=${endDate.toISOString()}`;
+    const requestUrl: string = `${calendarUrl}?start=${startDate.toDateString()}&end=${endDate.toDateString()}`;
     const response = await fetch(requestUrl);
     const json: QldRacewayEvent[] | MorganParkEvent[] | LakesideParkEvent[] = await response.json();
 

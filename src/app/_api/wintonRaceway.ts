@@ -3,13 +3,13 @@ import { SupportedVenues } from "../_constants/supportedVenues";
 import { WintonRacewayApiResponse } from "@/types/wintonRacewayTypes";
 
 /**
- * Converts all event dates to AEST so we can compare them property
+ * Strips the time out of a date so that we can compare
+ * events based on the date alone, not worrying about time
  * @param date 
- * @param time 
- * @returns the converted date
+ * @returns date with no time
  */
-function parseEventDate(date: string, time: string): Date {
-  return new Date(`${date}T${time}:00+10:00`);
+function toDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Promise<IndividualEvent[] | undefined> {
@@ -25,8 +25,8 @@ export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Pr
         // the API returns all events across all months, only include the ones
         // in the specified date range
         if (
-          parseEventDate(event.start.date, event.start.time) < startDate ||
-          parseEventDate(event.end.date, event.end.time) > endDate
+          toDay(new Date(event.start.date)) < toDay(startDate) ||
+          toDay(new Date(event.end.date)) > toDay(endDate)
         ) {
           continue;
         }

@@ -4,9 +4,9 @@ import "./NavBar.scss";
 import { Text } from "@mantine/core";
 
 const navLinks = [
-  { title: "Home", url: "/home" },
-  { title: "Calendar", url: "/calendar" },
-  { title: "Search", url: "/search" }
+  { title: "Home", url: "/pages/home" },
+  { title: "Calendar", url: "/pages/calendar" },
+  { title: "Search", url: "/pages/search" }
 ];
 
 export default function NavBar(): React.JSX.Element {

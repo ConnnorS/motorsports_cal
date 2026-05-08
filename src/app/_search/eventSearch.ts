@@ -11,12 +11,6 @@ export async function eventSearch(
   sortByDate: boolean
 ): Promise<IndividualEvent[]> {
 
-  // convert our start date to 12:01am and end date to 11:59pm
-  const startOfStartDate = new Date(startDate);
-  startOfStartDate.setHours(0, 1, 0, 0);
-  const endOfEndDate = new Date(endDate);
-  endOfEndDate.setHours(23, 59, 0, 0);
-
   let results: IndividualEvent[] = [];
 
   /* go through every venue we want to search and search for events */
@@ -24,12 +18,12 @@ export async function eventSearch(
     let searchResults: IndividualEvent[] | undefined;
     /* handle search for all CMS venues */
     if (SupportedVenues[venue].cmsSupported) {
-      searchResults = await getCmsEvents(startOfStartDate, endOfEndDate, venue);
+      searchResults = await getCmsEvents(startDate, endDate, venue);
     }
     /* handle search for all other venues */
     else {
       if (venue === "WINTON_RACEWAY") {
-        searchResults = await getWintonRacewayEvents(startOfStartDate, endOfEndDate);
+        searchResults = await getWintonRacewayEvents(startDate, endDate);
       }
     }
 
