@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import SimpleSearch from "../_components/search/SimpleSearch/SimpleSearch";
 import { readableDate } from "../_helpers/readableDate";
 import "./calendarPage.scss";
-import { eventSearch, getEventDetails } from "../_helpers/search/eventSearch";
+import { eventSearch, getEventDetails } from "../_search/eventSearch";
 
 export type SelectedVenues = Record<keyof typeof SupportedVenues, boolean>;
 
