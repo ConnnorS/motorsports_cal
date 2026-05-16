@@ -32,7 +32,8 @@ export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Pr
         }
 
         const newEvent: IndividualEvent = {
-          id: event.id,
+          id: event.id.toString(),
+          rawId: event.id,
           title: event.name,
           start: new Date(event.start.date + ":" + event.start.time),
           end: new Date(event.end.date + ":" + event.end.time),
@@ -66,7 +67,8 @@ export async function getWintonRacewayEventDetails(eventId: string | number): Pr
       for (const event of widget.data.settings.events) {
         if (event.id === eventId.toString()) {
           const newEventDetails: IndividualEventDetails = {
-            id: event.id,
+            id: event.id.toString(),
+            rawId: event.id,
             name: event.name,
             category: undefined,
             start: new Date(event.start.date + ":" + event.start.time),

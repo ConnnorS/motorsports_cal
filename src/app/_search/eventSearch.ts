@@ -32,6 +32,24 @@ export async function eventSearch(
     }
   }
 
+  /* prefix each event id with the venue name to avoid instances where
+  two events from different venues may have the same ID number */
+  const usedEventIds: Record<string, number> = {};
+  for (const result of results) {
+    // sometimes there's multiple events with the same ID in the same venue
+    // but at different times, we'll handle that too
+    let newResultId: string = `${result.venue}_${result.id}`;
+    if (newResultId in usedEventIds) {
+      usedEventIds[newResultId] += 1;
+      newResultId += `_${usedEventIds[newResultId]}`;
+    }
+    else {
+      usedEventIds[newResultId] = 0;
+    }
+
+    result.id = newResultId;
+  }
+
   /* remove any events with invalid date ranges */
   results = results.filter(event => {
     if (event.end < event.start) {
@@ -56,18 +74,24 @@ export async function eventSearch(
   return results;
 }
 
+/**
+ * Retrieves more in depth details for a specific event
+ * @param rawId - the raw ID of the event, specific to the venue
+ * @param venue - the venue of the event, so we know which API to call
+ * @returns the details of the event or undefined if not found
+ */
 export async function getEventDetails(
-  eventId: string | number,
+  rawId: string | number,
   venue: keyof typeof SupportedVenues
 ): Promise<IndividualEventDetails | undefined> {
   let eventDetails: IndividualEventDetails | undefined;
 
   if (SupportedVenues[venue].cmsSupported) {
-    eventDetails = await getCmsEventDetails(eventId, venue);
+    eventDetails = await getCmsEventDetails(rawId, venue);
   }
   else {
     if (venue === "WINTON_RACEWAY") {
-      eventDetails = await getWintonRacewayEventDetails(eventId);
+      eventDetails = await getWintonRacewayEventDetails(rawId);
     }
   }
 

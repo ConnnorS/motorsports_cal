@@ -29,7 +29,8 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
 
     for (const event of json) {
       const newEvent: IndividualEvent = {
-        id: event.id,
+        id: event.id.toString(),
+        rawId: event.id,
         title: event.title,
         start: new Date(event.start),
         end: new Date(event.end),
@@ -67,7 +68,8 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
     if (venue === "QLD_RACE_WAY") {
       const responseJson: QldRacewayEventDetails = await response.json();
       details = {
-        id: responseJson.id,
+        id: responseJson.id.toString(),
+        rawId: responseJson.id,
         name: responseJson.name,
         category: responseJson.category.name,
         start: new Date(responseJson.start_time),
@@ -83,7 +85,8 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
     else if (venue === "LAKESIDE_PARK") {
       const responseJson: LakesideParkEventDetails = await response.json();
       details = {
-        id: responseJson.id,
+        id: responseJson.id.toString(),
+        rawId: responseJson.id,
         name: responseJson.name,
         category: undefined,
         start: new Date(responseJson.start_time),
@@ -95,7 +98,8 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
     else if (venue === "MORGAN_PARK") {
       const responseJson: MorganParkEventDetails = await response.json();
       details = {
-        id: responseJson.id,
+        id: responseJson.id.toString(),
+        rawId: responseJson.id,
         name: responseJson.name,
         category: undefined,
         start: new Date(responseJson.start_date),
