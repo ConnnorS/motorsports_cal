@@ -54,7 +54,7 @@ export default function CalendarPage(): React.JSX.Element {
     open();
 
     let eventDetails: IndividualEventDetails | undefined;
-    eventDetails = await getEventDetails(event.id, event.venue);
+    eventDetails = await getEventDetails(event.rawId, event.venue);
     setCurrentlyOpenedEvent(eventDetails);
   }
 

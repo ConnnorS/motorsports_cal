@@ -28,6 +28,10 @@ export async function eventSearch(
     }
 
     if (searchResults) {
+      /* prefix each event id with the venue name to avoid conflicts */
+      for (const result of searchResults) {
+        result.id = venue + result.id;
+      }
       results = results.concat(searchResults);
     }
   }
@@ -56,18 +60,24 @@ export async function eventSearch(
   return results;
 }
 
+/**
+ * Retrieves more in depth details for a specific event
+ * @param rawId - the raw ID of the event, specific to the venue
+ * @param venue - the venue of the event, so we know which API to call
+ * @returns the details of the event or undefined if not found
+ */
 export async function getEventDetails(
-  eventId: string | number,
+  rawId: string | number,
   venue: keyof typeof SupportedVenues
 ): Promise<IndividualEventDetails | undefined> {
   let eventDetails: IndividualEventDetails | undefined;
 
   if (SupportedVenues[venue].cmsSupported) {
-    eventDetails = await getCmsEventDetails(eventId, venue);
+    eventDetails = await getCmsEventDetails(rawId, venue);
   }
   else {
     if (venue === "WINTON_RACEWAY") {
-      eventDetails = await getWintonRacewayEventDetails(eventId);
+      eventDetails = await getWintonRacewayEventDetails(rawId);
     }
   }
 

@@ -1,7 +1,10 @@
 import { SupportedVenues } from "@/app/_constants/supportedVenues"
 
 export type IndividualEvent = {
-  id: number | string,
+  /* id is prefixed with the venue key to avoid conflicts in the Mantine Table when events from different venues have the same ID */
+  id: string,
+  /* rawId is the original event ID specific to the venue, without any prefix */
+  rawId: string | number,
   title: string,
   start: Date,
   end: Date,
@@ -10,7 +13,10 @@ export type IndividualEvent = {
 };
 
 export type IndividualEventDetails = {
-  id: number | string;
+  /* id is prefixed with the venue key to avoid conflicts in the Mantine Table when events from different venues have the same ID */
+  id: string;
+  /* rawId is the original event ID specific to the venue, without any prefix */
+  rawId: string | number;
   name: string;
   category: string | undefined;
   start: Date;
