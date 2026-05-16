@@ -28,12 +28,26 @@ export async function eventSearch(
     }
 
     if (searchResults) {
-      /* prefix each event id with the venue name to avoid conflicts */
-      for (const result of searchResults) {
-        result.id = venue + result.id;
-      }
       results = results.concat(searchResults);
     }
+  }
+
+  /* prefix each event id with the venue name to avoid instances where
+  two events from different venues may have the same ID number */
+  const usedEventIds: Record<string, number> = {};
+  for (const result of results) {
+    // sometimes there's multiple events with the same ID in the same venue
+    // but at different times, we'll handle that too
+    let newResultId: string = `${result.venue}_${result.id}`;
+    if (newResultId in usedEventIds) {
+      usedEventIds[newResultId] += 1;
+      newResultId += `_${usedEventIds[newResultId]}`;
+    }
+    else {
+      usedEventIds[newResultId] = 0;
+    }
+
+    result.id = newResultId;
   }
 
   /* remove any events with invalid date ranges */
