@@ -1,8 +1,8 @@
 import { SupportedVenues } from "@/app/_constants/supportedVenues";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
-import { Button, MultiSelect, TextInput } from "@mantine/core";
+import { Button, MultiSelect, Pill, Text, TextInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 
 export default function AdvancedSearch(props: {
   searchParams: AdvancedSearchParams,
@@ -11,6 +11,8 @@ export default function AdvancedSearch(props: {
   isLoading: boolean,
   setIsLoading: React.Dispatch<SetStateAction<boolean>>
 }) {
+  const [currentTitleInput, setCurrentTitleInput] = useState<string>("");
+
   return (
     <div className="advancedSearch">
       <DateInput
@@ -23,11 +25,41 @@ export default function AdvancedSearch(props: {
         value={props.searchParams.end}
         onChange={value => props.setSearchParams({ ...props.searchParams, end: new Date(value ?? "") })}
       />
-      <TextInput
-        label="Title"
-        value={props.searchParams.title}
-        onChange={event => props.setSearchParams({ ...props.searchParams, title: event.currentTarget.value })}
-      />
+      <div className="titleInputContainer">
+        <TextInput
+          label="Title"
+          placeholder="Enter search term and press Enter"
+          value={currentTitleInput}
+          onChange={event => setCurrentTitleInput(event.currentTarget.value)}
+          onKeyDown={event => {
+            if (event.key === 'Enter' && currentTitleInput.trim() !== '') {
+              props.setSearchParams({
+                ...props.searchParams,
+                title: [...props.searchParams.title, currentTitleInput.trim()]
+              });
+              setCurrentTitleInput("");
+            }
+          }}
+        />
+        {props.searchParams.title.length > 0 && (
+          <div className="titlePills">
+            {props.searchParams.title.map((value, index) => (
+              <Pill
+                key={index}
+                withRemoveButton
+                onRemove={() => {
+                  props.setSearchParams({
+                    ...props.searchParams,
+                    title: props.searchParams.title.filter((_, i) => i !== index)
+                  });
+                }}
+              >
+                {value}
+              </Pill>
+            ))}
+          </div>
+        )}
+      </div>
       <MultiSelect
         className="venuesInput"
         label="Venues"
@@ -38,6 +70,7 @@ export default function AdvancedSearch(props: {
       />
 
       <div className="searchButton">
+        <Text>.</Text>
         <Button
           onClick={props.handleEventSearch}
           color="var(--color-btn-primary)"

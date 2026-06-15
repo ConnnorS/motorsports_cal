@@ -7,7 +7,7 @@ export async function eventSearch(
   startDate: Date,
   endDate: Date,
   venues: (keyof typeof SupportedVenues)[],
-  title: string | null,
+  title: string[],
   sortByDate: boolean
 ): Promise<IndividualEvent[]> {
 
@@ -60,9 +60,11 @@ export async function eventSearch(
   });
 
   /* now filter our search results by the title */
-  if (title) {
+  if (title.length > 0) {
     results = results.filter(event =>
-      event.title.toLocaleLowerCase().includes(title.toLocaleLowerCase())
+      title.some(searchTerm =>
+        event.title.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+      )
     );
   }
 

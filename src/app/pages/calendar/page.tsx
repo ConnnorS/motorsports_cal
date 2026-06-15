@@ -1,15 +1,15 @@
 "use client";
 
+import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 import { SupportedVenues } from "@/app/_constants/supportedVenues";
+import { readableDate } from "@/app/_helpers/readableDate";
+import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Card, Image, Modal, Pill, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import "./calendarPage.scss";
-import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
-import { readableDate } from "@/app/_helpers/readableDate";
-import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 
 export type SelectedVenues = Record<keyof typeof SupportedVenues, boolean>;
 
@@ -24,7 +24,7 @@ export default function CalendarPage(): React.JSX.Element {
     "MORGAN_PARK": false,
     "WINTON_RACEWAY": false
   });
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValues, setSearchValues] = useState<string[]>([]);
   const [events, setEvents] = useState<IndividualEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -40,7 +40,7 @@ export default function CalendarPage(): React.JSX.Element {
         lastDayOfMonth,
         // @ts-ignore
         Object.keys(selectedVenues).filter(key => selectedVenues[key] === true),
-        searchValue,
+        searchValues,
         false // don't need to sort, <Calendar> will organise the events for us
       )
 
@@ -102,8 +102,8 @@ export default function CalendarPage(): React.JSX.Element {
             setIsLoading={setIsLoading}
             selectedVenues={selectedVenues}
             setSelectedVenues={setSelectedVenues}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
+            searchValues={searchValues}
+            setSearchValues={setSearchValues}
             handleEventSearch={handleEventSearch}
           />
         </div>

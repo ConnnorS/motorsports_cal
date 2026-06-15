@@ -1,7 +1,7 @@
-import { Button, Checkbox, Divider, TextInput, Title } from "@mantine/core";
-import React from "react";
-import { SupportedVenues } from "../../../_constants/supportedVenues";
 import { SelectedVenues } from "@/app/pages/calendar/page";
+import { Button, Checkbox, Divider, Pill, TextInput, Title } from "@mantine/core";
+import React, { useState } from "react";
+import { SupportedVenues } from "../../../_constants/supportedVenues";
 
 
 export default function SimpleSearch(props: {
@@ -9,10 +9,11 @@ export default function SimpleSearch(props: {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   selectedVenues: SelectedVenues,
   setSelectedVenues: React.Dispatch<React.SetStateAction<SelectedVenues>>,
-  searchValue: string,
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>,
+  searchValues: string[],
+  setSearchValues: React.Dispatch<React.SetStateAction<string[]>>,
   handleEventSearch: () => void
 }): React.JSX.Element {
+  const [currentInput, setCurrentInput] = useState<string>("");
 
   /**
    * Allows us to quickly select or unselect all venues
@@ -68,16 +69,32 @@ export default function SimpleSearch(props: {
         <div className="options">
           <TextInput
             placeholder="Search for keywords"
-            value={props.searchValue}
+            value={currentInput}
             // disable search if we're loading or no venues are selected
             disabled={props.isLoading || Object.values(props.selectedVenues).every(selected => selected === false)}
-            onChange={event => props.setSearchValue(event.currentTarget.value)}
+            onChange={event => setCurrentInput(event.currentTarget.value)}
             onKeyDown={event => {
-              if (event.key === 'Enter') {
-                props.handleEventSearch();
+              if (event.key === 'Enter' && currentInput.trim() !== '') {
+                props.setSearchValues([...props.searchValues, currentInput.trim()]);
+                setCurrentInput("");
               }
             }}
           />
+          {props.searchValues.length > 0 && (
+            <div className="searchPills">
+              {props.searchValues.map((value, index) => (
+                <Pill
+                  key={index}
+                  withRemoveButton
+                  onRemove={() => {
+                    props.setSearchValues(props.searchValues.filter((_, i) => i !== index));
+                  }}
+                >
+                  {value}
+                </Pill>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
