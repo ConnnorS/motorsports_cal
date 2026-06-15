@@ -31,6 +31,12 @@
         display: flex;
         flex-direction: column;
         row-gap: 1vh;
+
+        .searchPills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
       }
     }
 

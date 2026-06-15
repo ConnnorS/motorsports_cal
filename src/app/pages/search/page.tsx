@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import "./searchPage.scss";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
-import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSearch";
-import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { IndividualEvent } from "@/types/event";
 import { Pagination } from "@mantine/core";
+import React, { useState } from "react";
+import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSearch";
+import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { eventSearch } from "../../_search/eventSearch";
+import "./searchPage.scss";
 
 const PAGE_SIZE: number = 12;
 
@@ -15,7 +15,7 @@ export default function SearchPage(): React.JSX.Element {
   const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
     start: new Date(),
     end: new Date(),
-    title: "",
+    title: [],
     venues: []
   });
   const [searchResults, setSearchResults] = useState<IndividualEvent[]>([]);

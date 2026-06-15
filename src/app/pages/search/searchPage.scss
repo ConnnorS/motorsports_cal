@@ -8,16 +8,33 @@
     display: flex;
     gap: 2vw;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 
     .descriptionInput,
-    .venuesInput {
+    .venuesInput,
+    .titleInputContainer {
       width: 20%;
     }
 
-    .searchButton {
+    .titleInputContainer {
       display: flex;
-      margin-top: auto;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .titlePills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+    }
+
+    .searchButton {
+      .mantine-Text-root {
+        color: var(--color-page-bg);
+      }
+
+      display: flex;
+      flex-direction: column;
     }
   }
 
