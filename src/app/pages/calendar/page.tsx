@@ -5,7 +5,7 @@ import { SupportedVenues } from "@/app/_constants/supportedVenues";
 import { readableDate } from "@/app/_helpers/readableDate";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
-import { Card, Image, Modal, Pill, Title } from "@mantine/core";
+import { Button, Card, Image, Modal, Pill, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
@@ -26,7 +26,26 @@ export default function CalendarPage(): React.JSX.Element {
   });
   const [searchValues, setSearchValues] = useState<string[]>([]);
   const [events, setEvents] = useState<IndividualEvent[]>([]);
+  const [savedEvents, setSavedEvents] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const getSavedEvents = () => {
+    const savedEvents = localStorage.getItem("SAVED_EVENTS");
+    if (savedEvents) {
+      setSavedEvents(JSON.parse(savedEvents));
+    }
+  }
+
+  const handleEventSave = (event: IndividualEventDetails | undefined) => {
+    if (!event) {
+      return;
+    }
+
+    const savedEventsCopy = [...savedEvents];
+    savedEventsCopy.push(event.id);
+    setSavedEvents(savedEventsCopy);
+    localStorage.setItem("SAVED_EVENTS", JSON.stringify(savedEventsCopy));
+  }
 
   const handleEventSearch = async () => {
     setIsLoading(true);
@@ -51,6 +70,8 @@ export default function CalendarPage(): React.JSX.Element {
   }
 
   const handleEventClick = async (event: IndividualEvent) => {
+    getSavedEvents();
+
     open();
 
     let eventDetails: IndividualEventDetails | undefined;
@@ -86,6 +107,14 @@ export default function CalendarPage(): React.JSX.Element {
 
             <div className="dates">
               <Pill>{readableDate(currentlyOpenedEvent?.start)}</Pill>→<Pill>{readableDate(currentlyOpenedEvent?.end)}</Pill>
+            </div>
+
+            <div className="save">
+              <Button
+                onClick={() => handleEventSave(currentlyOpenedEvent)}
+                disabled={!currentlyOpenedEvent || savedEvents.includes(currentlyOpenedEvent.id)}
+              >Save
+              </Button>
             </div>
 
             <div dangerouslySetInnerHTML={{ __html: currentlyOpenedEvent?.description ?? "" }} />

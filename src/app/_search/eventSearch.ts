@@ -97,5 +97,9 @@ export async function getEventDetails(
     }
   }
 
+  if (eventDetails) {
+    eventDetails.id = `${venue}_${eventDetails.id}`;
+  }
+
   return eventDetails;
 }
