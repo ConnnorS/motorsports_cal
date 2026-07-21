@@ -9,12 +9,11 @@ import SearchResultCard from "../../_components/SearchResultCard/SearchResultCar
 import { eventSearch } from "../../_search/eventSearch";
 import "./searchPage.scss";
 
-const PAGE_SIZE: number = 12;
-
 export default function SearchPage(): React.JSX.Element {
   const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
     start: new Date(),
     end: new Date(),
+    resultsPerPage: 12,
     title: [],
     venues: []
   });
@@ -54,7 +53,7 @@ export default function SearchPage(): React.JSX.Element {
 
       <div className="searchResults">
         {searchResults
-          .slice((pageNumber - 1) * PAGE_SIZE, pageNumber * PAGE_SIZE)
+          .slice((pageNumber - 1) * searchParams.resultsPerPage, pageNumber * searchParams.resultsPerPage)
           .map((event) => (
             <SearchResultCard key={event.id} event={event} />
           ))}
@@ -62,7 +61,7 @@ export default function SearchPage(): React.JSX.Element {
 
       <div className="pagination">
         <Pagination
-          total={searchResults.length / PAGE_SIZE}
+          total={searchResults.length / Number(searchParams.resultsPerPage)}
           value={pageNumber}
           onChange={setPageNumber}
         />
