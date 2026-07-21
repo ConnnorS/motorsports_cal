@@ -6,7 +6,7 @@ import { SetStateAction, useState } from "react";
 
 export default function AdvancedSearch(props: {
   searchParams: AdvancedSearchParams,
-  setSearchParams: React.Dispatch<SetStateAction<AdvancedSearchParams>>,
+  setSearchParams: (value: AdvancedSearchParams) => void,
   handleEventSearch: () => void,
   isLoading: boolean,
   setIsLoading: React.Dispatch<SetStateAction<boolean>>
@@ -67,6 +67,7 @@ export default function AdvancedSearch(props: {
           label: value.label, value: key
         }))}
         onChange={venues => props.setSearchParams({ ...props.searchParams, venues: venues as (keyof typeof SupportedVenues)[] })}
+        value={props.searchParams.venues}
       />
 
       <Select

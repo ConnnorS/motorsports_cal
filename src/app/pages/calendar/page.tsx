@@ -1,51 +1,28 @@
 "use client";
 
+import EventDetails from "@/app/_components/event/EventDetails";
 import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
-import { SupportedVenues } from "@/app/_constants/supportedVenues";
-import { readableDate } from "@/app/_helpers/readableDate";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
-import { Button, Card, Image, Modal, Pill, Title } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import "./calendarPage.scss";
-
-export type SelectedVenues = Record<keyof typeof SupportedVenues, boolean>;
+import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 
 export default function CalendarPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
+
+  const {
+    searchResults, setSearchResults,
+    selectedVenues, setSelectedVenues,
+    calendarDate, setCalendarDate,
+    searchValues, addSearchValue, deleteSearchValue
+  } = UseCalendarPageStore();
+
   const [currentlyOpenedEvent, setCurrentlyOpenedEvent] = useState<IndividualEventDetails | undefined>(undefined);
-
-  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
-  const [selectedVenues, setSelectedVenues] = useState<SelectedVenues>({
-    "LAKESIDE_PARK": false,
-    "QLD_RACE_WAY": false,
-    "MORGAN_PARK": false,
-    "WINTON_RACEWAY": false
-  });
-  const [searchValues, setSearchValues] = useState<string[]>([]);
-  const [events, setEvents] = useState<IndividualEvent[]>([]);
-  const [savedEvents, setSavedEvents] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const getSavedEvents = () => {
-    const savedEvents = localStorage.getItem("SAVED_EVENTS");
-    if (savedEvents) {
-      setSavedEvents(JSON.parse(savedEvents));
-    }
-  }
-
-  const handleEventSave = (event: IndividualEventDetails | undefined) => {
-    if (!event) {
-      return;
-    }
-
-    const savedEventsCopy = [...savedEvents];
-    savedEventsCopy.push(event.id);
-    setSavedEvents(savedEventsCopy);
-    localStorage.setItem("SAVED_EVENTS", JSON.stringify(savedEventsCopy));
-  }
 
   const handleEventSearch = async () => {
     setIsLoading(true);
@@ -63,19 +40,16 @@ export default function CalendarPage(): React.JSX.Element {
         false // don't need to sort, <Calendar> will organise the events for us
       )
 
-      setEvents(searchResults);
+      setSearchResults(searchResults);
     } finally {
       setIsLoading(false);
     }
   }
 
   const handleEventClick = async (event: IndividualEvent) => {
-    getSavedEvents();
-
     open();
 
-    let eventDetails: IndividualEventDetails | undefined;
-    eventDetails = await getEventDetails(event.rawId, event.venue);
+    const eventDetails = await getEventDetails(event.rawId, event.venue);
     setCurrentlyOpenedEvent(eventDetails);
   }
 
@@ -92,35 +66,7 @@ export default function CalendarPage(): React.JSX.Element {
   return (
     <>
       <Modal title="Event Details" opened={opened} onClose={handleEventClose}>
-        <Card>
-          <Card.Section>
-            <Image
-              src={currentlyOpenedEvent?.image?.url}
-              height={currentlyOpenedEvent?.image?.height}
-              width={currentlyOpenedEvent?.image?.width}
-            />
-          </Card.Section>
-
-          <div className="details">
-            <Title order={3}>{currentlyOpenedEvent?.name}</Title>
-            <Title order={5}>{currentlyOpenedEvent?.category}</Title>
-
-            <div className="dates">
-              <Pill>{readableDate(currentlyOpenedEvent?.start)}</Pill>→<Pill>{readableDate(currentlyOpenedEvent?.end)}</Pill>
-            </div>
-
-            <div className="save">
-              <Button
-                onClick={() => handleEventSave(currentlyOpenedEvent)}
-                disabled={!currentlyOpenedEvent || savedEvents.includes(currentlyOpenedEvent.id)}
-              >Save
-              </Button>
-            </div>
-
-            <div dangerouslySetInnerHTML={{ __html: currentlyOpenedEvent?.description ?? "" }} />
-          </div>
-
-        </Card>
+        <EventDetails currentlyOpenEvent={currentlyOpenedEvent} />
       </Modal>
 
       <div className="calendarPage">
@@ -132,7 +78,8 @@ export default function CalendarPage(): React.JSX.Element {
             selectedVenues={selectedVenues}
             setSelectedVenues={setSelectedVenues}
             searchValues={searchValues}
-            setSearchValues={setSearchValues}
+            addSearchValue={addSearchValue}
+            deleteSearchValue={deleteSearchValue}
             handleEventSearch={handleEventSearch}
           />
         </div>
@@ -141,7 +88,7 @@ export default function CalendarPage(): React.JSX.Element {
           <MonthView
             date={calendarDate}
             onDateChange={newDate => setCalendarDate(new Date(newDate))}
-            events={events as any}
+            events={searchResults as any}
             highlightToday={true}
             // @ts-ignore
             onEventClick={handleEventClick}

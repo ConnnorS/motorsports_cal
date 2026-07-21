@@ -1,16 +1,17 @@
-import { SelectedVenues } from "@/app/pages/calendar/page";
 import { Button, Checkbox, Divider, Pill, TextInput, Title } from "@mantine/core";
 import React, { useState } from "react";
 import { SupportedVenues } from "../../../_constants/supportedVenues";
+import { SelectedVenues } from "@/types/selectedVenues";
 
 
 export default function SimpleSearch(props: {
   isLoading: boolean,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   selectedVenues: SelectedVenues,
-  setSelectedVenues: React.Dispatch<React.SetStateAction<SelectedVenues>>,
+  setSelectedVenues: (value: SelectedVenues) => void,
   searchValues: string[],
-  setSearchValues: React.Dispatch<React.SetStateAction<string[]>>,
+  addSearchValue(value: string): void,
+  deleteSearchValue(index: number): void,
   handleEventSearch: () => void
 }): React.JSX.Element {
   const [currentInput, setCurrentInput] = useState<string>("");
@@ -55,7 +56,7 @@ export default function SimpleSearch(props: {
               disabled={props.isLoading}
               onChange={(event) => {
                 const checked = event.currentTarget.checked;
-                props.setSelectedVenues(prev => ({ ...prev, [venueKey]: checked }));
+                props.setSelectedVenues({ ...props.selectedVenues, [venueKey]: checked });
               }}
             />
           ))}
@@ -75,7 +76,7 @@ export default function SimpleSearch(props: {
             onChange={event => setCurrentInput(event.currentTarget.value)}
             onKeyDown={event => {
               if (event.key === 'Enter' && currentInput.trim() !== '') {
-                props.setSearchValues([...props.searchValues, currentInput.trim()]);
+                props.addSearchValue(currentInput.trim());
                 setCurrentInput("");
               }
             }}
@@ -87,7 +88,7 @@ export default function SimpleSearch(props: {
                   key={index}
                   withRemoveButton
                   onRemove={() => {
-                    props.setSearchValues(props.searchValues.filter((_, i) => i !== index));
+                    props.deleteSearchValue(index);
                   }}
                 >
                   {value}
