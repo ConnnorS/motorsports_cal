@@ -1,6 +1,6 @@
 import { SupportedVenues } from "@/app/_constants/supportedVenues";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
-import { Button, MultiSelect, Pill, Text, TextInput } from "@mantine/core";
+import { Button, MultiSelect, Pill, Select, Text, TextInput } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { SetStateAction, useState } from "react";
 
@@ -67,6 +67,13 @@ export default function AdvancedSearch(props: {
           label: value.label, value: key
         }))}
         onChange={venues => props.setSearchParams({ ...props.searchParams, venues: venues as (keyof typeof SupportedVenues)[] })}
+      />
+
+      <Select
+        data={["6", "12", "24", "48", "96"]}
+        label="Results Per Page"
+        value={props.searchParams.resultsPerPage.toString()}
+        onChange={value => props.setSearchParams({ ...props.searchParams, resultsPerPage: Number(value!) })}
       />
 
       <div className="searchButton">
