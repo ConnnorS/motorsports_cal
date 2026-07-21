@@ -1,12 +1,14 @@
 "use client";
 
+import EventDetails from "@/app/_components/event/EventDetails";
 import { AdvancedSearchParams } from "@/types/advancedSearch";
-import { IndividualEvent } from "@/types/event";
-import { Pagination } from "@mantine/core";
+import { IndividualEvent, IndividualEventDetails } from "@/types/event";
+import { Modal, Pagination } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import React, { useState } from "react";
 import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSearch";
 import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
-import { eventSearch } from "../../_search/eventSearch";
+import { eventSearch, getEventDetails } from "../../_search/eventSearch";
 import "./searchPage.scss";
 
 export default function SearchPage(): React.JSX.Element {
@@ -20,6 +22,10 @@ export default function SearchPage(): React.JSX.Element {
   const [searchResults, setSearchResults] = useState<IndividualEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
+
+  const [opened, { open, close }] = useDisclosure(false);
+  const [currentlyOpenEvent, setCurrentlyOpenEvent] = useState<IndividualEventDetails | undefined>(undefined);
+
 
   const handleAdvancedSearch = async () => {
     try {
@@ -41,31 +47,53 @@ export default function SearchPage(): React.JSX.Element {
     }
   };
 
+  const handleEventClick = async (event: IndividualEvent) => {
+    open();
+
+    const eventDetails = await getEventDetails(event.rawId, event.venue);
+    setCurrentlyOpenEvent(eventDetails);
+  }
+
+  const handleEventClose = () => {
+    setCurrentlyOpenEvent(undefined);
+    close();
+  }
+
   return (
-    <div className="searchPage">
-      <AdvancedSearch
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-        handleEventSearch={handleAdvancedSearch}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
+    <>
+      <Modal title="Event Details" opened={opened} onClose={close}>
+        <EventDetails currentlyOpenEvent={currentlyOpenEvent} />
+      </Modal>
 
-      <div className="searchResults">
-        {searchResults
-          .slice((pageNumber - 1) * searchParams.resultsPerPage, pageNumber * searchParams.resultsPerPage)
-          .map((event) => (
-            <SearchResultCard key={event.id} event={event} />
-          ))}
-      </div>
-
-      <div className="pagination">
-        <Pagination
-          total={searchResults.length / Number(searchParams.resultsPerPage)}
-          value={pageNumber}
-          onChange={setPageNumber}
+      <div className="searchPage">
+        <AdvancedSearch
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          handleEventSearch={handleAdvancedSearch}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
         />
+
+        <div className="searchResults">
+          {searchResults
+            .slice((pageNumber - 1) * searchParams.resultsPerPage, pageNumber * searchParams.resultsPerPage)
+            .map((event) => (
+              <SearchResultCard
+                key={event.id}
+                event={event}
+                onClick={() => handleEventClick(event)}
+              />
+            ))}
+        </div>
+
+        <div className="pagination">
+          <Pagination
+            total={searchResults.length / Number(searchParams.resultsPerPage)}
+            value={pageNumber}
+            onChange={setPageNumber}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

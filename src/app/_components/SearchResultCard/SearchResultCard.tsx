@@ -1,15 +1,20 @@
 "use client";
 
-import React from "react";
-import { Card, Group, Stack, Text } from "@mantine/core";
-import { IndividualEvent } from "@/types/event";
-import { readableDate } from "@/app/_helpers/readableDate";
-import "./SearchResultCard.scss";
 import { SupportedVenues } from "@/app/_constants/supportedVenues";
+import { readableDate } from "@/app/_helpers/readableDate";
+import { IndividualEvent } from "@/types/event";
+import { Card, Group, Stack, Text } from "@mantine/core";
+import React from "react";
+import "./SearchResultCard.scss";
 
-export default function SearchResultCard(props: { event: IndividualEvent }): React.JSX.Element {
+export default function SearchResultCard(props: {
+  event: IndividualEvent,
+  onClick?(): Promise<void>
+}): React.JSX.Element {
   return (
-    <Card className="searchResultCard" radius="md" shadow="sm" withBorder>
+    <Card className="searchResultCard" radius="md" shadow="sm" withBorder
+      onClick={props.onClick}
+    >
       <Stack gap="xs">
         <Group gap="apart" align="flex-start">
           <Text className="title" fw={700} size="lg">
