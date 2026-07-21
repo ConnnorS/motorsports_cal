@@ -10,34 +10,25 @@ import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSear
 import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { eventSearch, getEventDetails } from "../../_search/eventSearch";
 import "./searchPage.scss";
+import { UseSearchPageStore } from "@/app/_store/searchPageStore";
 
 export default function SearchPage(): React.JSX.Element {
-  const [searchParams, setSearchParams] = useState<AdvancedSearchParams>({
-    start: new Date(),
-    end: new Date(),
-    resultsPerPage: 12,
-    title: [],
-    venues: []
-  });
-  const [searchResults, setSearchResults] = useState<IndividualEvent[]>([]);
+  const pageStore = UseSearchPageStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-
   const [opened, { open, close }] = useDisclosure(false);
   const [currentlyOpenEvent, setCurrentlyOpenEvent] = useState<IndividualEventDetails | undefined>(undefined);
-
 
   const handleAdvancedSearch = async () => {
     try {
       setIsLoading(true);
       const allEvents = await eventSearch(
-        searchParams.start,
-        searchParams.end,
-        searchParams.venues,
-        searchParams.title,
+        pageStore.searchParams.start,
+        pageStore.searchParams.end,
+        pageStore.searchParams.venues,
+        pageStore.searchParams.title,
         true
       );
-      setSearchResults(allEvents);
+      pageStore.setSearchResults(allEvents);
     }
     catch (error: unknown) {
       console.error(error);
@@ -61,22 +52,22 @@ export default function SearchPage(): React.JSX.Element {
 
   return (
     <>
-      <Modal title="Event Details" opened={opened} onClose={close}>
+      <Modal title="Event Details" opened={opened} onClose={handleEventClose}>
         <EventDetails currentlyOpenEvent={currentlyOpenEvent} />
       </Modal>
 
       <div className="searchPage">
         <AdvancedSearch
-          searchParams={searchParams}
-          setSearchParams={setSearchParams}
+          searchParams={pageStore.searchParams}
+          setSearchParams={pageStore.setSearchParams}
           handleEventSearch={handleAdvancedSearch}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
         />
 
         <div className="searchResults">
-          {searchResults
-            .slice((pageNumber - 1) * searchParams.resultsPerPage, pageNumber * searchParams.resultsPerPage)
+          {pageStore.searchResults
+            .slice((pageStore.pageNumber - 1) * pageStore.searchParams.resultsPerPage, pageStore.pageNumber * pageStore.searchParams.resultsPerPage)
             .map((event) => (
               <SearchResultCard
                 key={event.id}
@@ -88,9 +79,9 @@ export default function SearchPage(): React.JSX.Element {
 
         <div className="pagination">
           <Pagination
-            total={searchResults.length / Number(searchParams.resultsPerPage)}
-            value={pageNumber}
-            onChange={setPageNumber}
+            total={pageStore.searchResults.length / pageStore.searchParams.resultsPerPage}
+            value={pageStore.pageNumber}
+            onChange={pageStore.setPageNumber}
           />
         </div>
       </div>

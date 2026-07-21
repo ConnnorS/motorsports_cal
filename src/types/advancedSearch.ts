@@ -5,5 +5,6 @@ export type AdvancedSearchParams = {
   end: Date;
   title: string[];
   resultsPerPage: number;
+  pageNumber: number;
   venues: (keyof typeof SupportedVenues)[];
 };

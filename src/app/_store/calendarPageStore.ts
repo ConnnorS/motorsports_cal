@@ -1,7 +1,7 @@
 import { IndividualEvent } from "@/types/event";
 import { SelectedVenues } from "@/types/selectedVenues";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface CalendarPageStore {
   searchResults: IndividualEvent[],
@@ -15,7 +15,7 @@ interface CalendarPageStore {
   deleteSearchValue: (index: number) => void
 }
 
-export const calendarPageStore = create<CalendarPageStore>()(
+export const UseCalendarPageStore = create<CalendarPageStore>()(
   persist(
     set => ({
       searchResults: [],
@@ -33,15 +33,14 @@ export const calendarPageStore = create<CalendarPageStore>()(
     }),
     {
       name: "calendarPageStore",
-      onRehydrateStorage: () => (state) => {
+      storage: createJSONStorage(() => localStorage, {
         // Dates are stored as `string` in localstorage so we must
         // make sure to convert them back before rehydrating
-        state?.setCalendarDate(new Date(state.calendarDate));
-        state?.searchResults.map(result => {
-          result.start = new Date(result.start);
-          result.end = new Date(result.end);
-        });
-      }
+        reviver: (key, value) => {
+          if (key === "start" || key === "end" || key === "calendarDate") return new Date(value as string);
+          return value;
+        }
+      })
     }
   )
 );
