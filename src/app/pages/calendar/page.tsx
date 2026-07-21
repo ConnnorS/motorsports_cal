@@ -2,8 +2,8 @@
 
 import EventDetails from "@/app/_components/event/EventDetails";
 import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
-import { SupportedVenues } from "@/app/_constants/supportedVenues";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
+import { calendarPageStore } from "@/app/_store/calendarPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -11,24 +11,18 @@ import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import "./calendarPage.scss";
 
-export type SelectedVenues = Record<keyof typeof SupportedVenues, boolean>;
-
 export default function CalendarPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
+
+  const {
+    searchResults, setSearchResults,
+    selectedVenues, setSelectedVenues,
+    calendarDate, setCalendarDate,
+    searchValues, addSearchValue, deleteSearchValue
+  } = calendarPageStore();
+
   const [currentlyOpenedEvent, setCurrentlyOpenedEvent] = useState<IndividualEventDetails | undefined>(undefined);
-
-  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
-  const [selectedVenues, setSelectedVenues] = useState<SelectedVenues>({
-    "LAKESIDE_PARK": false,
-    "QLD_RACE_WAY": false,
-    "MORGAN_PARK": false,
-    "WINTON_RACEWAY": false
-  });
-  const [searchValues, setSearchValues] = useState<string[]>([]);
-  const [events, setEvents] = useState<IndividualEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-
 
   const handleEventSearch = async () => {
     setIsLoading(true);
@@ -46,7 +40,7 @@ export default function CalendarPage(): React.JSX.Element {
         false // don't need to sort, <Calendar> will organise the events for us
       )
 
-      setEvents(searchResults);
+      setSearchResults(searchResults);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +78,8 @@ export default function CalendarPage(): React.JSX.Element {
             selectedVenues={selectedVenues}
             setSelectedVenues={setSelectedVenues}
             searchValues={searchValues}
-            setSearchValues={setSearchValues}
+            addSearchValue={addSearchValue}
+            deleteSearchValue={deleteSearchValue}
             handleEventSearch={handleEventSearch}
           />
         </div>
@@ -93,7 +88,7 @@ export default function CalendarPage(): React.JSX.Element {
           <MonthView
             date={calendarDate}
             onDateChange={newDate => setCalendarDate(new Date(newDate))}
-            events={events as any}
+            events={searchResults as any}
             highlightToday={true}
             // @ts-ignore
             onEventClick={handleEventClick}
