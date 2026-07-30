@@ -53,37 +53,40 @@ export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Pr
   }
 }
 
-export async function getWintonRacewayEventDetails(eventId: string | number): Promise<IndividualEventDetails | undefined> {
-  try {
-    /* Winton Raceway is tricky. The API returns a list of every single event
-      they have in existence with all the information. So for now, we'll just call
-      the API again, find that event, and extract the data
-    */
-    const response = await fetch(SupportedVenues.WINTON_RACEWAY.url);
-    const json: WintonRacewayApiResponse = await response.json();
-    const widgets = json.data.widgets;
+/**
+ * Gets the event details for a given eventId for Winton Raceway.
+ * 
+ * Winton Raceway is tricky. The API returns a list of every single event
+ * they have in existence with all the information. So for now, we'll just call
+ * the API again, find that event, and extract the data.
+ * 
+ * @param eventId
+ * @throws `Error`
+ */
+export async function getWintonRacewayEventDetails(eventId: string | number): Promise<IndividualEventDetails | Error> {
 
-    for (const widget of Object.values(widgets)) {
-      for (const event of widget.data.settings.events) {
-        if (event.id === eventId.toString()) {
-          const newEventDetails: IndividualEventDetails = {
-            id: event.id.toString(),
-            rawId: event.id,
-            name: event.name,
-            category: undefined,
-            start: new Date(event.start.date + ":" + event.start.time),
-            end: new Date(event.end.date + ":" + event.end.time),
-            image: { url: event.image.url, height: event.image.height, width: event.image.width },
-            description: event.description
-          };
+  const response = await fetch(SupportedVenues.WINTON_RACEWAY.url);
+  const json: WintonRacewayApiResponse = await response.json();
+  const widgets = json.data.widgets;
 
-          return newEventDetails;
-        }
+  for (const widget of Object.values(widgets)) {
+    for (const event of widget.data.settings.events) {
+      if (event.id === eventId.toString()) {
+        const newEventDetails: IndividualEventDetails = {
+          id: event.id.toString(),
+          rawId: event.id,
+          name: event.name,
+          category: undefined,
+          start: new Date(event.start.date + ":" + event.start.time),
+          end: new Date(event.end.date + ":" + event.end.time),
+          image: { url: event.image.url, height: event.image.height, width: event.image.width },
+          description: event.description
+        };
+
+        return newEventDetails;
       }
     }
   }
-  catch (error: unknown) {
-    console.error(error);
-    return undefined;
-  }
+
+  return new Error(`Unable to find Winton event ${eventId}`);
 }

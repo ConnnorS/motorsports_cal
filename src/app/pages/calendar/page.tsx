@@ -3,13 +3,13 @@
 import EventDetails from "@/app/_components/event/EventDetails";
 import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
+import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import "./calendarPage.scss";
-import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 
 export default function CalendarPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
@@ -50,7 +50,12 @@ export default function CalendarPage(): React.JSX.Element {
     open();
 
     const eventDetails = await getEventDetails(event.rawId, event.venue);
-    setCurrentlyOpenedEvent(eventDetails);
+    if (eventDetails instanceof Error) {
+      alert(eventDetails.message);
+    }
+    else {
+      setCurrentlyOpenedEvent(eventDetails);
+    }
   }
 
   const handleEventClose = () => {

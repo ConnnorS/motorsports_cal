@@ -53,71 +53,73 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
  * Like the above getCmsEvents() function, gets an individual event's details based on the event ID for a given
  * raceway which uses the CMS system. So far, these raceways are Queensland Raceway, Lakeside Park, and Winton Park
  * @param eventId 
- * @param venue 
+ * @param venue
+ * @throws `Error`
  */
-export async function getCmsEventDetails(eventId: number | string, venue: keyof typeof SupportedVenues): Promise<IndividualEventDetails | undefined> {
-  try {
-    // return undefined for any venues that don't use the CMS system
-    if (!SupportedVenues[venue].cmsSupported) {
-      throw new Error("Cms is not supported for venue: " + venue);
-    }
-
-    const response = await fetch(`${SupportedVenues[venue].url}/${eventId}`)
-    let details: IndividualEventDetails | undefined = undefined;
-
-    if (venue === "QLD_RACE_WAY") {
-      const responseJson: QldRacewayEventDetails = await response.json();
-      details = {
-        id: responseJson.id.toString(),
-        rawId: responseJson.id,
-        name: responseJson.name,
-        category: responseJson.category.name,
-        start: new Date(responseJson.start_time),
-        end: new Date(responseJson.end_time),
-        image: {
-          url: responseJson.image.url,
-          height: responseJson.image.height,
-          width: responseJson.image.width
-        },
-        description: responseJson.calendar_content
-      };
-    }
-    else if (venue === "LAKESIDE_PARK") {
-      const responseJson: LakesideParkEventDetails = await response.json();
-      details = {
-        id: responseJson.id.toString(),
-        rawId: responseJson.id,
-        name: responseJson.name,
-        category: undefined,
-        start: new Date(responseJson.start_time),
-        end: new Date(responseJson.end_time),
-        image: undefined,
-        description: responseJson.description
-      };
-    }
-    else if (venue === "MORGAN_PARK") {
-      const responseJson: MorganParkEventDetails = await response.json();
-      details = {
-        id: responseJson.id.toString(),
-        rawId: responseJson.id,
-        name: responseJson.name,
-        category: undefined,
-        start: new Date(responseJson.start_date),
-        end: new Date(responseJson.end_date),
-        description: responseJson.calendar_content,
-        image: {
-          url: responseJson.type.photo.url,
-          height: responseJson.type.photo.height,
-          width: responseJson.type.photo.width
-        }
-      };
-    }
-
-    return details;
-  }
-  catch (error: unknown) {
-    console.error(error);
-    return undefined;
+export async function getCmsEventDetails(eventId: number | string, venue: keyof typeof SupportedVenues): Promise<IndividualEventDetails | Error> {
+  // return undefined for any venues that don't use the CMS system
+  if (!SupportedVenues[venue].cmsSupported) {
+    return new Error("Cms is not supported for venue: " + venue);
   }
 
+  const response = await fetch(`${SupportedVenues[venue].url}/${eventId}`);
+  const responseJson: QldRacewayEventDetails | LakesideParkEventDetails | MorganParkEventDetails | undefined = await response.json();
+
+  if (!responseJson) {
+    return new Error(`Error while fetching, dump: ${JSON.stringify(responseJson)}`);
+  }
+
+  let details: IndividualEventDetails;
+  if (venue === "QLD_RACE_WAY") {
+    const qldRacewayEventDetails = responseJson as QldRacewayEventDetails;
+    details = {
+      id: qldRacewayEventDetails.id.toString(),
+      rawId: qldRacewayEventDetails.id,
+      name: qldRacewayEventDetails.name,
+      category: qldRacewayEventDetails.category.name,
+      start: new Date(qldRacewayEventDetails.start_time),
+      end: new Date(qldRacewayEventDetails.end_time),
+      image: {
+        url: qldRacewayEventDetails.image.url,
+        height: qldRacewayEventDetails.image.height,
+        width: qldRacewayEventDetails.image.width
+      },
+      description: qldRacewayEventDetails.calendar_content
+    };
+  }
+  else if (venue === "LAKESIDE_PARK") {
+    const lakesideParkEventDetails = responseJson as LakesideParkEventDetails;
+    details = {
+      id: lakesideParkEventDetails.id.toString(),
+      rawId: lakesideParkEventDetails.id,
+      name: lakesideParkEventDetails.name,
+      category: undefined,
+      start: new Date(lakesideParkEventDetails.start_time),
+      end: new Date(lakesideParkEventDetails.end_time),
+      image: undefined,
+      description: lakesideParkEventDetails.description
+    };
+  }
+  else if (venue === "MORGAN_PARK") {
+    const morganParkEventDetails = responseJson as MorganParkEventDetails;
+    details = {
+      id: morganParkEventDetails.id.toString(),
+      rawId: morganParkEventDetails.id,
+      name: morganParkEventDetails.name,
+      category: undefined,
+      start: new Date(morganParkEventDetails.start_date),
+      end: new Date(morganParkEventDetails.end_date),
+      description: morganParkEventDetails.calendar_content,
+      image: {
+        url: morganParkEventDetails.type.photo.url,
+        height: morganParkEventDetails.type.photo.height,
+        width: morganParkEventDetails.type.photo.width
+      }
+    };
+  }
+  else {
+    return new Error(`Attempted cms search for unsupported venue ${venue}`);
+  }
+
+  return details;
 }

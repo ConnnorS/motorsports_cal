@@ -85,21 +85,24 @@ export async function eventSearch(
 export async function getEventDetails(
   rawId: string | number,
   venue: keyof typeof SupportedVenues
-): Promise<IndividualEventDetails | undefined> {
-  let eventDetails: IndividualEventDetails | undefined;
+): Promise<IndividualEventDetails | Error> {
+  let eventDetails: IndividualEventDetails | Error;
 
   if (SupportedVenues[venue].cmsSupported) {
     eventDetails = await getCmsEventDetails(rawId, venue);
   }
+  else if (venue === "WINTON_RACEWAY") {
+    eventDetails = await getWintonRacewayEventDetails(rawId);
+  }
   else {
-    if (venue === "WINTON_RACEWAY") {
-      eventDetails = await getWintonRacewayEventDetails(rawId);
-    }
+    return new Error(`Unsupported venue ${venue}`);
   }
 
-  if (eventDetails) {
-    eventDetails.id = `${venue}_${eventDetails.id}`;
+  if (eventDetails instanceof Error) {
+    return new Error(`Error retrieving event details for Event ID ${rawId} from ${venue}`);
   }
+
+  eventDetails.id = `${venue}_${eventDetails.id}`;
 
   return eventDetails;
 }
