@@ -12,7 +12,7 @@ import { IndividualEvent, IndividualEventDetails } from "@/types/event";
  * @param venues 
  * @param title 
  * @param sortByDate 
- * @returns array of Events (empty if nothing found)
+ * @returns array of Events (empty if nothing found) or Error
  */
 export async function eventSearch(
   startDate: Date,

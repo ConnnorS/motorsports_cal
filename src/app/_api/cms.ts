@@ -12,6 +12,7 @@ import { LakesideParkEvent, LakesideParkEventDetails } from "@/types/lakesidePar
  * @param startDate 
  * @param endDate 
  * @param venue 
+ * @returns an array of IndividualEvent's or Error
  */
 export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof typeof SupportedVenues): Promise<IndividualEvent[] | Error> {
   const events: IndividualEvent[] = [];
@@ -54,7 +55,7 @@ export async function getCmsEvents(startDate: Date, endDate: Date, venue: keyof 
  * raceway which uses the CMS system. So far, these raceways are Queensland Raceway, Lakeside Park, and Winton Park
  * @param eventId 
  * @param venue
- * @throws `Error`
+ * @returns the Event Details or an Error
  */
 export async function getCmsEventDetails(eventId: number | string, venue: keyof typeof SupportedVenues): Promise<IndividualEventDetails | Error> {
   // return undefined for any venues that don't use the CMS system

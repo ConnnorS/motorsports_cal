@@ -12,6 +12,13 @@ function toDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+/**
+ * Gets the events from Winton Raceway between the startDate
+ * and endDate
+ * @param startDate 
+ * @param endDate 
+ * @returns list of IndividualEvent's or an Error
+ */
 export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Promise<IndividualEvent[] | Error> {
   const events: IndividualEvent[] = [];
 
@@ -61,7 +68,7 @@ export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Pr
  * the API again, find that event, and extract the data.
  * 
  * @param eventId
- * @throws `Error`
+ * @returns the IndividualEventDetails or an Error
  */
 export async function getWintonRacewayEventDetails(eventId: string | number): Promise<IndividualEventDetails | Error> {
 
