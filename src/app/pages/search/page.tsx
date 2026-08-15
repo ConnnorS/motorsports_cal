@@ -18,23 +18,24 @@ export default function SearchPage(): React.JSX.Element {
   const [currentlyOpenEvent, setCurrentlyOpenEvent] = useState<IndividualEventDetails | undefined>(undefined);
 
   const handleAdvancedSearch = async () => {
-    try {
-      setIsLoading(true);
-      const allEvents = await eventSearch(
-        pageStore.searchParams.start,
-        pageStore.searchParams.end,
-        pageStore.searchParams.venues,
-        pageStore.searchParams.title,
-        true
-      );
-      pageStore.setSearchResults(allEvents);
+    setIsLoading(true);
+
+    const result = await eventSearch(
+      pageStore.searchParams.start,
+      pageStore.searchParams.end,
+      pageStore.searchParams.venues,
+      pageStore.searchParams.title,
+      true
+    );
+
+    if (!(result instanceof Error)) {
+      pageStore.setSearchResults(result);
     }
-    catch (error: unknown) {
-      console.error(error);
+    else {
+      alert(result.message);
     }
-    finally {
-      setIsLoading(false);
-    }
+
+    setIsLoading(false);
   };
 
   const handleEventClick = async (event: IndividualEvent) => {
