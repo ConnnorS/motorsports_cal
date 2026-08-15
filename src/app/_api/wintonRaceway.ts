@@ -12,7 +12,14 @@ function toDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Promise<IndividualEvent[] | undefined> {
+/**
+ * Gets the events from Winton Raceway between the startDate
+ * and endDate
+ * @param startDate 
+ * @param endDate 
+ * @returns list of IndividualEvent's or an Error
+ */
+export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Promise<IndividualEvent[] | Error> {
   const events: IndividualEvent[] = [];
 
   try {
@@ -49,16 +56,23 @@ export async function getWintonRacewayEvents(startDate: Date, endDate: Date): Pr
   }
   catch (error: unknown) {
     console.error(error);
-    return undefined;
+    return new Error(`Unknown error occurred while getting WintonRaceway events`);
   }
 }
 
-export async function getWintonRacewayEventDetails(eventId: string | number): Promise<IndividualEventDetails | undefined> {
+/**
+ * Gets the event details for a given eventId for Winton Raceway.
+ * 
+ * Winton Raceway is tricky. The API returns a list of every single event
+ * they have in existence with all the information. So for now, we'll just call
+ * the API again, find that event, and extract the data.
+ * 
+ * @param eventId
+ * @returns the IndividualEventDetails or an Error
+ */
+export async function getWintonRacewayEventDetails(eventId: string | number): Promise<IndividualEventDetails | Error> {
+
   try {
-    /* Winton Raceway is tricky. The API returns a list of every single event
-      they have in existence with all the information. So for now, we'll just call
-      the API again, find that event, and extract the data
-    */
     const response = await fetch(SupportedVenues.WINTON_RACEWAY.url);
     const json: WintonRacewayApiResponse = await response.json();
     const widgets = json.data.widgets;
@@ -81,9 +95,13 @@ export async function getWintonRacewayEventDetails(eventId: string | number): Pr
         }
       }
     }
+    throw new Error(`Unable to find Winton event ${eventId}`);
   }
   catch (error: unknown) {
-    console.error(error);
-    return undefined;
+    let errorMessage = `Error while searching for Winton event ${eventId}`;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return new Error(errorMessage);
   }
 }

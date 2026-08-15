@@ -3,13 +3,13 @@
 import EventDetails from "@/app/_components/event/EventDetails";
 import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
+import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useState } from "react";
 import "./calendarPage.scss";
-import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 
 export default function CalendarPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
@@ -26,31 +26,39 @@ export default function CalendarPage(): React.JSX.Element {
 
   const handleEventSearch = async () => {
     setIsLoading(true);
-    try {
-      // we always search by entire month, so get the first and last days of that month
-      const firstDayOfMonth = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
-      const lastDayOfMonth = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
+    // we always search by entire month, so get the first and last days of that month
+    const firstDayOfMonth = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+    const lastDayOfMonth = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
 
-      const searchResults = await eventSearch(
-        firstDayOfMonth,
-        lastDayOfMonth,
-        // @ts-ignore
-        Object.keys(selectedVenues).filter(key => selectedVenues[key] === true),
-        searchValues,
-        false // don't need to sort, <Calendar> will organise the events for us
-      )
+    const result = await eventSearch(
+      firstDayOfMonth,
+      lastDayOfMonth,
+      // @ts-ignore
+      Object.keys(selectedVenues).filter(key => selectedVenues[key] === true),
+      searchValues,
+      false // don't need to sort, <Calendar> will organise the events for us
+    )
 
-      setSearchResults(searchResults);
-    } finally {
-      setIsLoading(false);
+    if (result instanceof Error) {
+      alert(result.message);
     }
+    else {
+      setSearchResults(result);
+    }
+
+    setIsLoading(false);
   }
 
   const handleEventClick = async (event: IndividualEvent) => {
     open();
 
-    const eventDetails = await getEventDetails(event.rawId, event.venue);
-    setCurrentlyOpenedEvent(eventDetails);
+    const result = await getEventDetails(event.rawId, event.venue);
+    if (result instanceof Error) {
+      alert(result.message);
+    }
+    else {
+      setCurrentlyOpenedEvent(result);
+    }
   }
 
   const handleEventClose = () => {

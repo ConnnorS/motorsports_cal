@@ -1,7 +1,7 @@
 "use client";
 
 import EventDetails from "@/app/_components/event/EventDetails";
-import { AdvancedSearchParams } from "@/types/advancedSearch";
+import { UseSearchPageStore } from "@/app/_store/searchPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Modal, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -10,7 +10,6 @@ import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSear
 import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { eventSearch, getEventDetails } from "../../_search/eventSearch";
 import "./searchPage.scss";
-import { UseSearchPageStore } from "@/app/_store/searchPageStore";
 
 export default function SearchPage(): React.JSX.Element {
   const pageStore = UseSearchPageStore();
@@ -19,30 +18,36 @@ export default function SearchPage(): React.JSX.Element {
   const [currentlyOpenEvent, setCurrentlyOpenEvent] = useState<IndividualEventDetails | undefined>(undefined);
 
   const handleAdvancedSearch = async () => {
-    try {
-      setIsLoading(true);
-      const allEvents = await eventSearch(
-        pageStore.searchParams.start,
-        pageStore.searchParams.end,
-        pageStore.searchParams.venues,
-        pageStore.searchParams.title,
-        true
-      );
-      pageStore.setSearchResults(allEvents);
+    setIsLoading(true);
+
+    const result = await eventSearch(
+      pageStore.searchParams.start,
+      pageStore.searchParams.end,
+      pageStore.searchParams.venues,
+      pageStore.searchParams.title,
+      true
+    );
+
+    if (!(result instanceof Error)) {
+      pageStore.setSearchResults(result);
     }
-    catch (error: unknown) {
-      console.error(error);
+    else {
+      alert(result.message);
     }
-    finally {
-      setIsLoading(false);
-    }
+
+    setIsLoading(false);
   };
 
   const handleEventClick = async (event: IndividualEvent) => {
     open();
 
     const eventDetails = await getEventDetails(event.rawId, event.venue);
-    setCurrentlyOpenEvent(eventDetails);
+    if (eventDetails instanceof Error) {
+      alert(eventDetails.message);
+    }
+    else {
+      setCurrentlyOpenEvent(eventDetails);
+    }
   }
 
   const handleEventClose = () => {
