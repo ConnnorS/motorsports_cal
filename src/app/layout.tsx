@@ -3,8 +3,8 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/schedule/styles.css";
 import type { Metadata } from "next";
-import "./styles.scss";
 import NavBar from "./_components/navigation/NavBar";
+import "./styles.scss";
 
 export const metadata: Metadata = {
   title: "Motorsports Cal"

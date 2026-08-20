@@ -8,10 +8,16 @@ import { IndividualEvent, IndividualEventDetails } from "@/types/event";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./calendarPage.scss";
+import AlertsBanner from "@/app/_components/alert/AlertsBanner";
+import { UseAlertsStore } from "@/app/_store/alertsStore";
+import { MotorsportsCalAlertSeverity } from "@/types/motorsportsCalAlert";
 
 export default function CalendarPage(): React.JSX.Element {
+  const isFirstRender = useRef(true);
+  const isSecondRender = useRef(true);
+
   const [opened, { open, close }] = useDisclosure(false);
 
   const {
@@ -20,6 +26,7 @@ export default function CalendarPage(): React.JSX.Element {
     calendarDate, setCalendarDate,
     searchValues, addSearchValue, deleteSearchValue
   } = UseCalendarPageStore();
+  const alertsStore = UseAlertsStore();
 
   const [currentlyOpenedEvent, setCurrentlyOpenedEvent] = useState<IndividualEventDetails | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -40,7 +47,18 @@ export default function CalendarPage(): React.JSX.Element {
     )
 
     if (result instanceof Error) {
-      alert(result.message);
+      alertsStore.addAlert({
+        title: "Error",
+        body: result.message,
+        severity: MotorsportsCalAlertSeverity.WARN
+      });
+    }
+    else if (result.length === 0) {
+      alertsStore.addAlert({
+        title: "Warning",
+        body: "No events found",
+        severity: MotorsportsCalAlertSeverity.WARN
+      });
     }
     else {
       setSearchResults(result);
@@ -68,6 +86,15 @@ export default function CalendarPage(): React.JSX.Element {
 
   /* automatically search when the calendar's date changes */
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    else if (isSecondRender.current) {
+      isSecondRender.current = false;
+      return;
+    }
+
     handleEventSearch();
   }, [calendarDate]);
 
@@ -76,6 +103,8 @@ export default function CalendarPage(): React.JSX.Element {
       <Modal title="Event Details" opened={opened} onClose={handleEventClose}>
         <EventDetails currentlyOpenEvent={currentlyOpenedEvent} />
       </Modal>
+
+      <AlertsBanner />
 
       <div className="calendarPage">
 
@@ -102,7 +131,6 @@ export default function CalendarPage(): React.JSX.Element {
             onEventClick={handleEventClick}
           />
         </div>
-
       </div>
     </>
   );

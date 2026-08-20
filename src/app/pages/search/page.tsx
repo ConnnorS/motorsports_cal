@@ -10,6 +10,7 @@ import AdvancedSearch from "../../_components/search/AdvancedSearch/AdvancedSear
 import SearchResultCard from "../../_components/SearchResultCard/SearchResultCard";
 import { eventSearch, getEventDetails } from "../../_search/eventSearch";
 import "./searchPage.scss";
+import AlertsBanner from "@/app/_components/alert/AlertsBanner";
 
 export default function SearchPage(): React.JSX.Element {
   const pageStore = UseSearchPageStore();
@@ -60,6 +61,8 @@ export default function SearchPage(): React.JSX.Element {
       <Modal title="Event Details" opened={opened} onClose={handleEventClose}>
         <EventDetails currentlyOpenEvent={currentlyOpenEvent} />
       </Modal>
+
+      <AlertsBanner />
 
       <div className="searchPage">
         <AdvancedSearch
