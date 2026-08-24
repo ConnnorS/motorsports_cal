@@ -53,3 +53,4 @@ jobs:
           app-name: 'wa-motorsportscal-dev'
           slot-name: 'Production'
           package: ./src/build/standalone
+          startup-command: 'node server.js'
