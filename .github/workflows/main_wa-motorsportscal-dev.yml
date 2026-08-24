@@ -46,11 +46,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_57C0AF7CC1444BFAAEDC96D8A03D5310 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D3A0AC9F0BEB4A8A8B8C00823248D8EE }}
 
-      - name: Troubleshoot
-        run: |
-          ls
-          pwd
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
