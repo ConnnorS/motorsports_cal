@@ -68,7 +68,8 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
     const responseJson: QldRacewayEventDetails | LakesideParkEventDetails | MorganParkEventDetails | undefined = await response.json();
 
     if (!responseJson) {
-      throw new Error(`Error while fetching, dump: ${JSON.stringify(responseJson)}`);
+      console.error(`Error while fetching for ${venue}, dump: ${JSON.stringify(responseJson)}`)
+      return new Error(`${venue}'s API failed to respond.`);
     }
 
     let details: IndividualEventDetails;
@@ -119,17 +120,15 @@ export async function getCmsEventDetails(eventId: number | string, venue: keyof 
         }
       };
     }
-    else {
-      throw new Error(`Attempted cms search for unsupported venue ${venue}`);
-    }
 
-    return details;
+    return details!;
   }
   catch (error: unknown) {
-    let errorMessage = `Error while getting event details for id ${eventId} at venue ${venue}`;
     if (error instanceof Error) {
-      errorMessage = error.message;
+      return error;
     }
-    return new Error(errorMessage);
+    else {
+      return new Error(`Error while getting event details for id ${eventId} at venue ${venue}`);
+    }
   }
 }

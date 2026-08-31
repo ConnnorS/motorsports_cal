@@ -39,10 +39,10 @@ export async function eventSearch(
     }
     /* check our result */
     if (!result) {
-      return new Error(`result is undefined`);
+      return new Error(`No results returned for venue: ${venue}`);
     }
     else if (result instanceof Error) {
-      return new Error(`Error while searching for events: ${result.message}`);
+      return result;
     }
     else {
       results = results.concat(result);

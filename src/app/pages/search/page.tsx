@@ -1,8 +1,11 @@
 "use client";
 
+import AlertsBanner from "@/app/_components/alert/AlertsBanner";
 import EventDetails from "@/app/_components/event/EventDetails";
+import { UseAlertsStore } from "@/app/_store/alertsStore";
 import { UseSearchPageStore } from "@/app/_store/searchPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
+import { MotorsportsCalAlertSeverity } from "@/types/motorsportsCalAlert";
 import { Modal, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useState } from "react";
@@ -12,7 +15,8 @@ import { eventSearch, getEventDetails } from "../../_search/eventSearch";
 import "./searchPage.scss";
 
 export default function SearchPage(): React.JSX.Element {
-  const pageStore = UseSearchPageStore();
+  const searchPageStore = UseSearchPageStore();
+  const alertsStore = UseAlertsStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [currentlyOpenEvent, setCurrentlyOpenEvent] = useState<IndividualEventDetails | undefined>(undefined);
@@ -21,18 +25,29 @@ export default function SearchPage(): React.JSX.Element {
     setIsLoading(true);
 
     const result = await eventSearch(
-      pageStore.searchParams.start,
-      pageStore.searchParams.end,
-      pageStore.searchParams.venues,
-      pageStore.searchParams.title,
+      searchPageStore.searchParams.start,
+      searchPageStore.searchParams.end,
+      searchPageStore.searchParams.venues,
+      searchPageStore.searchParams.title,
       true
     );
 
-    if (!(result instanceof Error)) {
-      pageStore.setSearchResults(result);
+    if (result instanceof Error) {
+      alertsStore.addAlert({
+        title: "Error",
+        body: result.message,
+        severity: MotorsportsCalAlertSeverity.ERROR
+      });
+    }
+    else if (result.length === 0) {
+      alertsStore.addAlert({
+        title: "Warning",
+        body: "No events found",
+        severity: MotorsportsCalAlertSeverity.WARN
+      });
     }
     else {
-      alert(result.message);
+      searchPageStore.setSearchResults(result);
     }
 
     setIsLoading(false);
@@ -61,18 +76,20 @@ export default function SearchPage(): React.JSX.Element {
         <EventDetails currentlyOpenEvent={currentlyOpenEvent} />
       </Modal>
 
+      <AlertsBanner />
+
       <div className="searchPage">
         <AdvancedSearch
-          searchParams={pageStore.searchParams}
-          setSearchParams={pageStore.setSearchParams}
+          searchParams={searchPageStore.searchParams}
+          setSearchParams={searchPageStore.setSearchParams}
           handleEventSearch={handleAdvancedSearch}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
         />
 
         <div className="searchResults">
-          {pageStore.searchResults
-            .slice((pageStore.pageNumber - 1) * pageStore.searchParams.resultsPerPage, pageStore.pageNumber * pageStore.searchParams.resultsPerPage)
+          {searchPageStore.searchResults
+            .slice((searchPageStore.pageNumber - 1) * searchPageStore.searchParams.resultsPerPage, searchPageStore.pageNumber * searchPageStore.searchParams.resultsPerPage)
             .map((event) => (
               <SearchResultCard
                 key={event.id}
@@ -84,9 +101,9 @@ export default function SearchPage(): React.JSX.Element {
 
         <div className="pagination">
           <Pagination
-            total={pageStore.searchResults.length / pageStore.searchParams.resultsPerPage}
-            value={pageStore.pageNumber}
-            onChange={pageStore.setPageNumber}
+            total={searchPageStore.searchResults.length / searchPageStore.searchParams.resultsPerPage}
+            value={searchPageStore.pageNumber}
+            onChange={searchPageStore.setPageNumber}
           />
         </div>
       </div>

@@ -1,0 +1,26 @@
+.alertsBanner {
+  padding-top: 1vh;
+  display: flex;
+  justify-content: center;
+  gap: 0.5vw;
+
+  .alert {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5vh;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.5vh;
+
+    .mantine-Button-root {
+      transform: rotate(90deg);
+      color: white;
+    }
+  }
+}
