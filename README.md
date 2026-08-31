@@ -1,10 +1,10 @@
-# Motorsports Cal [work in progress]
+# Motorsports Cal
 Motorsports Cal is a simple Next.js + React project which brings together the calendars of major racing venues and tracks from around Australia into a single, searchable calendar with better filtering capabilities.
 
 ## Problem & Solution
-We all love bringing our cars to the race track. Whether it's drag racing, roll racing, hot laps, or drifting, Australia has a plethora of venues that have these things on offer. However, finding the right time, place, and event is often a long process which involves checking the calendars of major tracks in your area and scrolling through event listing, all for the event to be changed last minute and your plans ruined.
+We all love bringing our cars to the race track. Whether it's drag racing, roll racing, hot laps, or drifting, Australia has a plethora of venues that have these things on offer. However, finding the right time, place, and event is often a long process which involves checking the calendars of major tracks in your area and scrolling through event listings, all for the event to be changed last minute and your plans ruined.
 
-Motorsports Cal fixes that by bringing together all the publicly accessible venues and timetables from motorsports venues around Australia into a single calendar with search and filtering capabilities. Users can select what venues they'd like to do to, the month or weekend they're interested in, and even find events by keyword so they're not overwhelmed with hundreds of options.
+Motorsports Cal fixes that by bringing together all the publicly accessible venues and timetables from motorsports venues around Australia into a single calendar with search and filtering capabilities. Users can select what venues they'd like to go to, the month or weekend they're interested in, and even find events by keyword so they're not overwhelmed with hundreds of options.
 
 ## Features
 ### Venue Selection and Keyword Search Displayed on a Viewable Calendar
@@ -16,13 +16,15 @@ Motorsports Cal fixes that by bringing together all the publicly accessible venu
 ### View Event Description and Details
 ![alt text](/images/event_view.png)
 
-## Upcoming Features
-### More Advanced Search Features with Date Fine-Tuning
+## Advanced Search Features with Date Fine-Tuning
 ![alt text](/images/advanced_search.png)
+
+## Upcoming Features
 
 ### Event Bookmarking and Event Lists
 
 ### Support for More Venues
+
 
 # Technical Guide
 
@@ -65,7 +67,3 @@ The "CMS" API is a service and API which a lot of venues in Australia appear to 
 
 ### Other APIs
 APIs that other venues' websites use are hard-coded into their own files in `src\app\_api`
-
-## Data Conversion and Data Flow
-
-### The `IndividualEvent` Common Type

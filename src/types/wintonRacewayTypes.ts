@@ -1,5 +1,3 @@
-import { NumberInputCssVariables } from "@mantine/core"
-
 export type WintonRacewayApiResponse = {
   status: number,
   data: {
