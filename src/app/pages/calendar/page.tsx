@@ -1,18 +1,18 @@
 "use client";
 
+import AlertsBanner from "@/app/_components/alert/AlertsBanner";
 import EventDetails from "@/app/_components/event/EventDetails";
 import SimpleSearch from "@/app/_components/search/SimpleSearch/SimpleSearch";
 import { eventSearch, getEventDetails } from "@/app/_search/eventSearch";
+import { UseAlertsStore } from "@/app/_store/alertsStore";
 import { UseCalendarPageStore } from "@/app/_store/calendarPageStore";
 import { IndividualEvent, IndividualEventDetails } from "@/types/event";
+import { MotorsportsCalAlertSeverity } from "@/types/motorsportsCalAlert";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MonthView } from "@mantine/schedule";
 import React, { useEffect, useRef, useState } from "react";
 import "./calendarPage.scss";
-import AlertsBanner from "@/app/_components/alert/AlertsBanner";
-import { UseAlertsStore } from "@/app/_store/alertsStore";
-import { MotorsportsCalAlertSeverity } from "@/types/motorsportsCalAlert";
 
 export default function CalendarPage(): React.JSX.Element {
   const isFirstRender = useRef(true);

@@ -1,4 +1,4 @@
-import { MotorsportsCalAlert, MotorsportsCalAlertSeverity } from "@/types/motorsportsCalAlert";
+import { MotorsportsCalAlert } from "@/types/motorsportsCalAlert";
 import { create } from "zustand";
 
 interface AlertsStore {
@@ -7,6 +7,9 @@ interface AlertsStore {
   removeAlert(index: number): void
 }
 
+/**
+ * Zustand store to store an array of alerts across the application
+ */
 export const UseAlertsStore = create<AlertsStore>()(set => ({
   alerts: [],
   addAlert: (newAlert: MotorsportsCalAlert) => set(state => ({ alerts: [...state.alerts, newAlert] })),
